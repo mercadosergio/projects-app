@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+// import { RealTimeNotifications } from '@/components/real-time-notifications';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartBar, faGear } from '@fortawesome/free-solid-svg-icons';
 
@@ -22,6 +23,7 @@ export function Header() {
           </div>
         </div>
         <div className='flex items-center gap-4'>
+          {/* <RealTimeNotifications /> */}
           <Button variant='outline' size='sm'>
             <FontAwesomeIcon className='h-4 w-4 mr-2' icon={faGear} />
             Configuración
