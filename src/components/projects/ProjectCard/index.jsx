@@ -4,11 +4,9 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
-import { useState } from 'react';
+import Link from 'next/link';
 
-export function ProjectCard({ project, onOpenForm }) {
-  const [selectedProject, setSelectedProject] = useState(null);
-
+export function ProjectCard({ project, onOpenForm, onOpenDetail }) {
   const totalTasks = project.tasks.length;
   const completedTasks = project.tasks.filter(
     (task) => task.status === 'COMPLETED'
@@ -23,12 +21,9 @@ export function ProjectCard({ project, onOpenForm }) {
             <div className='space-y-1'>
               <CardTitle className='text-lg'>{project.name}</CardTitle>
             </div>
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => setSelectedProject(project)}>
+            <Link variant='ghost' size='sm' href={`/projects/${project.id}`}>
               <FontAwesomeIcon className='h-4 w-4' icon={faEye} />
-            </Button>
+            </Link>
           </div>
         </CardHeader>
         <CardContent className='space-y-4'>
@@ -48,20 +43,22 @@ export function ProjectCard({ project, onOpenForm }) {
             <span className='text-gray-500'>
               {completedTasks}/{totalTasks} tareas
             </span>
-            <span className='text-gray-500'>Vence: {project.completeDate}</span>
+            <span className='text-gray-500'>Vence: {project.dueDate}</span>
           </div>
 
           <div className='flex items-center justify-between'>
             <div className='flex -space-x-2'>
-              {project.team.slice(0, 3).map((member, index) => (
+              {project.collaborators.slice(0, 3).map((member, index) => (
                 <Avatar key={index} className='h-6 w-6 border-2 border-white'>
-                  <AvatarFallback className='text-xs'>{member}</AvatarFallback>
+                  <AvatarFallback className='text-xs'>
+                    {member.avatar}
+                  </AvatarFallback>
                 </Avatar>
               ))}
-              {project.team.length > 3 && (
+              {project.collaborators.length > 3 && (
                 <div className='h-6 w-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center'>
                   <span className='text-xs text-gray-500'>
-                    +{project.team.length - 3}
+                    +{project.collaborators.length - 3}
                   </span>
                 </div>
               )}
@@ -75,22 +72,6 @@ export function ProjectCard({ project, onOpenForm }) {
           </div>
         </CardContent>
       </Card>
-
-      {selectedProject && (
-        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto'>
-          <div className='bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto p-6'>
-            {/* <ProjectDetail
-              project={selectedProject}
-              onEdit={() => {
-                setSelectedProject(null);
-                handleEditProject(selectedProject);
-              }}
-              onDelete={() => handleDeleteProject(selectedProject.id)}
-              onClose={() => setSelectedProject(null)}
-            /> */}
-          </div>
-        </div>
-      )}
     </>
   );
 }

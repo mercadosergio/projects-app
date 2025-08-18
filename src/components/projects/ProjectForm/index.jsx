@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faX } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -14,25 +14,39 @@ import {
   DialogTitle
 } from '@/components/ui/dialog';
 
-const teamMembers = [
-  { id: 'JD', name: 'Juan Díaz', avatar: 'JD' },
-  { id: 'AM', name: 'Ana Martínez', avatar: 'AM' },
-  { id: 'CS', name: 'Carlos Silva', avatar: 'CS' },
-  { id: 'RG', name: 'Roberto García', avatar: 'RG' },
-  { id: 'LM', name: 'Laura Morales', avatar: 'LM' },
-  { id: 'PH', name: 'Pedro Hernández', avatar: 'PH' },
-  { id: 'MK', name: 'María Keller', avatar: 'MK' },
-  { id: 'TN', name: 'Tomás Navarro', avatar: 'TN' }
-];
-
 export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
   const [form, setForm] = useState({
     name: project?.name || '',
     description: project?.description || '',
     priority: project?.priority || 'medium',
-    completeDate: project?.completeDate || '',
-    team: project?.team || []
+    dueDate: project?.dueDate || '',
+    team: project?.team || [],
+    collaboratorsId: project?.collaborators
+      ? project.collaborators.map((c) => c.id)
+      : []
   });
+
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await fetch('/api/users');
+        const data = await res.json();
+
+        setUsers(data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUsers();
+  }, []);
+
+  // if (loading) return <p>Cargando usuarios...</p>;
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,15 +61,16 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
       console.log('Editar');
     }
   };
+
   const create = () => {};
 
   const update = () => {};
 
-  const addTeamMember = (memberId) => {
-    if (!form.team.includes(memberId)) {
+  const addCollaborator = (id) => {
+    if (!form.collaboratorsId.includes(id)) {
       setForm({
         ...form,
-        team: [...form.team, memberId]
+        collaboratorsId: [...form.collaboratorsId, id]
       });
     }
   };
@@ -69,7 +84,7 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[625px]'>
         <form onSubmit={submitForm}>
           <DialogHeader>
             <DialogTitle>
@@ -137,16 +152,16 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
 
             <div className='space-y-2'>
               <label
-                htmlFor='completeDate'
+                htmlFor='dueDate'
                 className='block text-sm font-medium text-gray-900'>
                 Fecha Límite
               </label>
               <div className='relative'>
                 <input
-                  id='completeDate'
-                  name='completeDate'
+                  id='dueDate'
+                  name='dueDate'
                   type='date'
-                  value={form.completeDate}
+                  value={form.dueDate}
                   onChange={handleChange}
                   required
                   className='w-full h-9 px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
@@ -161,43 +176,44 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
 
           <div className='space-y-4'>
             <label className='block text-sm font-medium text-gray-900'>
-              Miembros del Equipo
+              Colaboradores
             </label>
 
-            {form.team.length > 0 && (
+            {users.length > 0 && (
               <div className='flex flex-wrap gap-2'>
-                {form.team.map((memberId) => {
-                  const member = teamMembers.find((m) => m.id === memberId);
-                  return (
-                    <span
-                      key={memberId}
-                      className='inline-flex items-center gap-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-900 rounded-md border'>
-                      {member?.name}
-                      <button
-                        type='button'
-                        onClick={() => removeTeamMember(memberId)}
-                        className='ml-1 hover:bg-red-500 hover:text-white rounded-full p-0.5 transition-colors'>
-                        <FontAwesomeIcon icon={faX} className='h-3 w-3' />
-                      </button>
-                    </span>
-                  );
-                })}
+                {users
+                  .filter((user) => form.collaboratorsId.includes(user.id))
+                  .map((user) => {
+                    return (
+                      <span
+                        key={user.id}
+                        className='inline-flex items-center gap-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-900 rounded-md border'>
+                        {user?.name}
+                        <button
+                          type='button'
+                          onClick={() => removeTeamMember(user)}
+                          className='ml-1 hover:bg-red-500 hover:text-white rounded-full p-0.5 transition-colors'>
+                          <FontAwesomeIcon icon={faX} className='h-3 w-3' />
+                        </button>
+                      </span>
+                    );
+                  })}
               </div>
             )}
 
             <div className='space-y-2'>
               <label className='text-sm text-gray-500'>Agregar miembros:</label>
               <div className='flex flex-wrap gap-2'>
-                {teamMembers
-                  .filter((member) => !form.team.includes(member.id))
-                  .map((member) => (
+                {users
+                  .filter((user) => !form.collaboratorsId.includes(user.id))
+                  .map((user) => (
                     <button
-                      key={member.id}
+                      key={user.id}
                       type='button'
-                      onClick={() => addTeamMember(member.id)}
+                      onClick={() => addCollaborator(user.id)}
                       className='inline-flex items-center gap-2 px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors'>
                       <FontAwesomeIcon icon={faPlus} className='h-3 w-3' />
-                      {member.name}
+                      {user.name}
                     </button>
                   ))}
               </div>

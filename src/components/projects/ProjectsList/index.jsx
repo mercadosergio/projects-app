@@ -15,42 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { ProjectForm } from '../ProjectForm';
-
-const mockProjects = [
-  {
-    id: 1,
-    name: 'Rediseño de Sitio Web',
-    description: 'Actualización completa del sitio web corporativo',
-    progress: 75,
-    tasks: 12,
-    completedTasks: 9,
-    team: ['JD', 'AM', 'CS'],
-    priority: 'high',
-    deadline: '2024-01-15'
-  },
-  {
-    id: 2,
-    name: 'App Móvil E-commerce',
-    description: 'Desarrollo de aplicación móvil para ventas online',
-    progress: 45,
-    tasks: 18,
-    completedTasks: 8,
-    team: ['RG', 'LM', 'PH'],
-    priority: 'medium',
-    deadline: '2024-02-28'
-  },
-  {
-    id: 3,
-    name: 'Sistema de Inventario',
-    description: 'Implementación de sistema de gestión de inventario',
-    progress: 20,
-    tasks: 8,
-    completedTasks: 2,
-    team: ['MK', 'TN'],
-    priority: 'low',
-    deadline: '2024-03-30'
-  }
-];
+import { ProjectDetail } from '../ProjectDetail';
 
 export function ProyectsList({ projects }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -58,11 +23,17 @@ export function ProyectsList({ projects }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProject, setselectedProject] = useState(null);
   const [isFormUpdate, setIsFormUpdate] = useState(false);
+  const [isDeatilOpen, setIsDeatilOpen] = useState(false);
 
   const openForm = (mode, project) => {
     setIsFormOpen(true);
     setselectedProject(project);
     setIsFormUpdate(mode === 'CREATE' ? false : true);
+  };
+
+  const openDetail = (project) => {
+    setIsDeatilOpen(true);
+    setselectedProject(project);
   };
 
   const handleDeleteProject = (projectId) => {
@@ -122,6 +93,7 @@ export function ProyectsList({ projects }) {
         {filteredProjects.map((project) => (
           <ProjectCard
             onOpenForm={openForm}
+            onOpenDetail={openDetail}
             key={project.id}
             project={project}
           />
@@ -151,12 +123,38 @@ export function ProyectsList({ projects }) {
         </div>
       )}
 
-      <ProjectForm
-        isUpdate={isFormUpdate}
-        project={selectedProject}
-        isOpen={isFormOpen}
-        onOpenChange={setIsFormOpen}
-      />
+      {isFormOpen && (
+        <ProjectForm
+          isUpdate={isFormUpdate}
+          project={selectedProject}
+          isOpen={isFormOpen}
+          onOpenChange={setIsFormOpen}
+        />
+      )}
+
+      {isDeatilOpen && (
+        <ProjectDetail
+          project={selectedProject}
+          isOpen={isDeatilOpen}
+          onOpenChange={setIsDeatilOpen}
+        />
+      )}
+
+      {/* {selectedProject && (
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto'>
+          <div className='bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto p-6'>
+            <ProjectDetail
+              project={selectedProject}
+              onEdit={() => {
+                setSelectedProject(null);
+                handleEditProject(selectedProject);
+              }}
+              onDelete={() => handleDeleteProject(selectedProject.id)}
+              onClose={() => setSelectedProject(null)}
+            />
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }
