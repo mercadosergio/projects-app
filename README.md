@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Projects App
 
-## Getting Started
+Aplicación web de gestión de proyectos y tareas
 
-First, run the development server:
+## Descripción
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+En el contexto de la aplicación, el usuario es global, y este tiene el control de todas las operaciones en ella, por lo que las notificaciones se envían a una dirección de correo electronico configurada
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Datos técnicos
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Este proyecto utiliza las siguientes herramientas:
+- Nextjs
+- Tailwindcss
+- Aws Lambda
+- AWS DynamoDB
+- AWS SNS(Simple Notification Services)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Autor 🖋️
 
-## Learn More
+Sergio Mercado Salazar
 
-To learn more about Next.js, take a look at the following resources:
+- [Linkedin](https://www.linkedin.com/in/devsergiom/)
+- [Github](https://github.com/mercadosergio)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Instalación
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. Clonar el repositorio
+   `git clone https://github.com/mercadosergio/projects-app.git`
 
-## Deploy on Vercel
+2. Una vez clonado el repositorio, cree un archivo llamado ``.env.local``, en el debe colocar las respectivas variables de entorno de los servicios a utilizar, como referencia tiene el archivo `.env.local.example`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. Abrir la consola de comandos y ubicarse en el directorio raiz del proyecto, allí ejecutar `npm install`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. Para lanzar la aplicación en ambiente de desarrollo ejecute en la consola `npm run dev` e interactue con las caracteristicas de la misma.
