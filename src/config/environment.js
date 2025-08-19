@@ -1,5 +1,5 @@
 export const environment = {
-  API_URL: 'http://localhost:3000/api',
+  API_URL: process.env.NEXT_PUBLIC_API_URL,
   AWS_REGION: process.env.AWS3_REGION,
   AWS_ACCESS_KEY_ID: process.env.AWS3_ACCESS_KEY_ID,
   AWS_SECRET_KEY: process.env.AWS3_SECRET_KEY,
