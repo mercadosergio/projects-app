@@ -13,9 +13,14 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { createTask, updateTask } from '@/app/actions/task-actions';
+import {
+  createTask,
+  toAssignTask,
+  updateTask
+} from '@/app/actions/task-actions';
 import { PRIORITIES } from '@/utils/app/types';
 import toast from 'react-hot-toast';
+import { LoadingOverlay } from '@/components/shared/Loading';
 
 export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
   const tomorrow = new Date();
@@ -31,7 +36,7 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
   });
 
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -84,6 +89,7 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
 
   const create = async (formData) => {
     try {
+      setLoading(true);
       const result = await createTask(formData);
       if (result) {
         resetForm();
@@ -92,11 +98,14 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
       }
     } catch (error) {
       console.error('Error al guardar:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const update = async (id, formData) => {
     try {
+      setLoading(true);
       const result = await updateTask(id, formData);
       if (result) {
         resetForm();
@@ -104,15 +113,32 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
       }
     } catch (error) {
       console.error('Error al actualizar:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const addAssignee = (id) => {
-    if (!form.assignees.includes(id)) {
-      setForm({
-        ...form,
-        assignees: [...form.assignees, id]
-      });
+  const toAssign = async (userId) => {
+    try {
+      if (!form.assignees.includes(userId)) {
+        const formData = new FormData();
+        formData.append('id', task.id);
+        formData.append('userId', userId);
+        formData.append('projectId', projectId);
+        formData.append('taskTitle', task.title);
+
+        const result = await toAssignTask(formData);
+
+        if (result) {
+          setForm({
+            ...form,
+            assignees: [...form.assignees, userId]
+          });
+          onOpenChange();
+        }
+      }
+    } catch (error) {
+      console.error('Error al guardar:', error);
     }
   };
 
@@ -132,7 +158,7 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
               {isUpdate ? 'Editar tarea' : 'Crear tarea'}
             </DialogTitle>
           </DialogHeader>
-          <div className='space-y-2'>
+          <div className='space-y-2 mt-4'>
             <label
               htmlFor='name'
               className='block text-sm font-medium text-gray-900'>
@@ -216,55 +242,57 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
             </div>
           </div>
 
-          <div className='space-y-4'>
-            <label className='block text-sm font-medium text-gray-900'>
-              Responsables
-            </label>
-
-            {isUpdate && users.length > 0 && (
-              <div className='flex flex-wrap gap-2'>
-                {users
-                  .filter((user) => form.assignees.includes(user.id))
-                  .map((user) => {
-                    return (
-                      <span
-                        key={user.id}
-                        className='inline-flex items-center gap-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-900 rounded-md border'>
-                        {user?.name}
-                        <button
-                          type='button'
-                          onClick={() => removeTeamMember(user)}
-                          className='ml-1 hover:bg-red-500 hover:text-white rounded-full p-0.5 transition-colors'>
-                          <FontAwesomeIcon icon={faX} className='h-3 w-3' />
-                        </button>
-                      </span>
-                    );
-                  })}
-              </div>
-            )}
-
-            <div className='space-y-2'>
-              <label className='text-sm text-gray-500'>
-                Agregar responsables:
+          {isUpdate && (
+            <div className='space-y-4'>
+              <label className='block text-sm font-medium text-gray-900'>
+                Responsables
               </label>
-              <div className='flex flex-wrap gap-2'>
-                {users.length > 0 &&
-                  users
-                    .filter((user) => !form.assignees.includes(user.id))
-                    .map((user) => (
-                      <button
-                        key={user.id}
-                        type='button'
-                        onClick={() => addAssignee(user.id)}
-                        className='inline-flex items-center gap-2 px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors'>
-                        <FontAwesomeIcon icon={faPlus} className='h-3 w-3' />
-                        {user.name}
-                      </button>
-                    ))}
+
+              {users.length > 0 && (
+                <div className='flex flex-wrap gap-2'>
+                  {users
+                    .filter((user) => form.assignees.includes(user.id))
+                    .map((user) => {
+                      return (
+                        <span
+                          key={user.id}
+                          className='inline-flex items-center gap-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-900 rounded-md border'>
+                          {user?.name}
+                          <button
+                            type='button'
+                            onClick={() => removeTeamMember(user)}
+                            className='ml-1 hover:bg-red-500 hover:text-white rounded-full p-0.5 transition-colors'>
+                            <FontAwesomeIcon icon={faX} className='h-3 w-3' />
+                          </button>
+                        </span>
+                      );
+                    })}
+                </div>
+              )}
+
+              <div className='space-y-2'>
+                <label className='text-sm text-gray-500'>
+                  Agregar responsables:
+                </label>
+                <div className='flex flex-wrap gap-2'>
+                  {users.length > 0 &&
+                    users
+                      .filter((user) => !form.assignees.includes(user.id))
+                      .map((user) => (
+                        <button
+                          key={user.id}
+                          type='button'
+                          onClick={() => toAssign(user.id)}
+                          className='inline-flex items-center gap-2 px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors'>
+                          <FontAwesomeIcon icon={faPlus} className='h-3 w-3' />
+                          {user.name}
+                        </button>
+                      ))}
+                </div>
               </div>
             </div>
-          </div>
-          <DialogFooter>
+          )}
+          <DialogFooter className='mt-4'>
             <DialogClose asChild>
               <Button variant='outline'>Cancelar</Button>
             </DialogClose>
@@ -273,6 +301,8 @@ export function TaskForm({ isUpdate, task, isOpen, onOpenChange, projectId }) {
             </Button>
           </DialogFooter>
         </form>
+
+        {loading && <LoadingOverlay />}
       </DialogContent>
     </Dialog>
   );

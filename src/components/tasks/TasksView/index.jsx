@@ -15,12 +15,14 @@ import { useState } from 'react';
 import { TaskForm } from '../TaskForm';
 import { deleteTask } from '@/app/actions/task-actions';
 import { SelectStatus } from '../SelectStatus';
+import { LoadingOverlay } from '@/components/shared/Loading';
 
 export function TasksView({ tasks, projectId }) {
   const [draggedTask, setDraggedTask] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedTask, setselectedTask] = useState(null);
   const [isFormUpdate, setIsFormUpdate] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openForm = (mode, task) => {
     setIsFormOpen(true);
@@ -38,7 +40,7 @@ export function TasksView({ tasks, projectId }) {
       const formData = new FormData();
       formData.append('id', id);
       formData.append('projectId', projectId);
-
+      setLoading(true);
       const result = await deleteTask(formData);
 
       if (result) {
@@ -46,6 +48,8 @@ export function TasksView({ tasks, projectId }) {
       }
     } catch (error) {
       console.error('Error al guardar:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,11 +101,9 @@ export function TasksView({ tasks, projectId }) {
                 .map((task) => (
                   <Card
                     key={task.id}
-                    className={`p-2 cursor-move hover:shadow-md transition-shadow task-priority-${
+                    className={`p-2 hover:shadow-md transition-shadow task-priority-${
                       task.priority
-                    } ${isOverdue(task.dueDate) ? 'border-red-500' : ''}`}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, task)}>
+                    } ${isOverdue(task.dueDate) ? 'border-red-500' : ''}`}>
                     <div className='flex justify-between items-center'>
                       <CardTitle className='text-sm font-medium line-clamp-2'>
                         {task.title}
@@ -140,9 +142,7 @@ export function TasksView({ tasks, projectId }) {
                 0 && (
                 <div className='flex items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg'>
                   <p className='text-sm text-gray-500'>
-                    {status.name === 'PENDING'
-                      ? 'Arrastra tareas aquí o crea una nueva'
-                      : 'Arrastra tareas aquí'}
+                    No hay tareas hasta el momento
                   </p>
                 </div>
               )}
@@ -160,6 +160,8 @@ export function TasksView({ tasks, projectId }) {
           projectId={projectId}
         />
       )}
+
+      {loading && <LoadingOverlay />}
     </div>
   );
 }

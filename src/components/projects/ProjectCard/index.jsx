@@ -3,12 +3,12 @@ import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons';
 
-export function ProjectCard({ project, onOpenForm, onOpenDetail }) {
+export function ProjectCard({ project, onOpenForm }) {
   const totalTasks = project.tasks.length;
   const completedTasks = project.tasks.filter(
     (task) => task.status === 'COMPLETED'
@@ -24,7 +24,10 @@ export function ProjectCard({ project, onOpenForm, onOpenDetail }) {
               <CardTitle className='text-lg'>{project.name}</CardTitle>
             </div>
             <Link variant='ghost' size='sm' href={`/projects/${project.id}`}>
-              <FontAwesomeIcon className='h-4 w-4' icon={faEye} />
+              <FontAwesomeIcon
+                className='h-4 w-4'
+                icon={faArrowUpRightFromSquare}
+              />
             </Link>
           </div>
         </CardHeader>

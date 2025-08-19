@@ -1,14 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faChartBar,
-  faCheckCircle,
-  faFolder
-} from '@fortawesome/free-regular-svg-icons';
+import { faFolder } from '@fortawesome/free-regular-svg-icons';
 import clsx from 'clsx';
 
 export function Sidebar() {
@@ -16,19 +11,9 @@ export function Sidebar() {
 
   const navItems = [
     {
-      href: '/dashboard',
-      label: 'Dashboard',
-      icon: faChartBar
-    },
-    {
       href: '/',
       label: 'Proyectos',
       icon: faFolder
-    },
-    {
-      href: '/tasks',
-      label: 'Tareas',
-      icon: faCheckCircle
     }
   ];
 

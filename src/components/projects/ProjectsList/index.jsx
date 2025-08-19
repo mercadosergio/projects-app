@@ -15,30 +15,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter, faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { ProjectForm } from '../ProjectForm';
-import { ProjectDetail } from '../ProjectDetail';
 
 export function ProyectsList({ projects }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedProject, setselectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [isFormUpdate, setIsFormUpdate] = useState(false);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const openForm = (mode, project) => {
     setIsFormOpen(true);
-    setselectedProject(project);
+    setSelectedProject(project);
     setIsFormUpdate(mode === 'CREATE' ? false : true);
-  };
-
-  const openDetail = (project) => {
-    setIsDetailOpen(true);
-    setselectedProject(project);
-  };
-
-  const handleDeleteProject = (projectId) => {
-    setProjects(projects.filter((p) => p.id !== projectId));
-    setSelectedProject(null);
   };
 
   const destroyForm = () => {
@@ -98,7 +86,6 @@ export function ProyectsList({ projects }) {
         {filteredProjects.map((project) => (
           <ProjectCard
             onOpenForm={openForm}
-            onOpenDetail={openDetail}
             key={project.id}
             project={project}
           />
@@ -134,14 +121,6 @@ export function ProyectsList({ projects }) {
           project={selectedProject}
           isOpen={isFormOpen}
           onOpenChange={setIsFormOpen}
-        />
-      )}
-
-      {isDetailOpen && (
-        <ProjectDetail
-          project={selectedProject}
-          isOpen={isDetailOpen}
-          onOpenChange={setIsDetailOpen}
         />
       )}
     </div>

@@ -12,8 +12,8 @@ export async function createProject(formData) {
     const res = await fetch(`${URL}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
+        'Content-Type': 'application/json'
+        // Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify(object)
     });
@@ -21,7 +21,7 @@ export async function createProject(formData) {
     if (!res.ok) throw new Error('Error creando proyecto');
     const result = await res.json();
 
-    revalidatePath('/projects');
+    revalidatePath('/');
 
     return result;
   } catch (err) {
@@ -43,7 +43,7 @@ export async function updateProject(id, formData) {
     if (!res.ok) throw new Error('Error actualizando proyecto');
     const result = await res.json();
 
-    revalidatePath('/projects');
+    revalidatePath('/');
 
     return result;
   } catch (err) {
@@ -52,16 +52,16 @@ export async function updateProject(id, formData) {
   }
 }
 
-export async function deleteProject(id) {
+export async function deleteProject(formData) {
   try {
-    const res = await fetch(`${URL}/${id}`, {
+    const res = await fetch(`${URL}/${formData.get('id')}`, {
       method: 'DELETE'
     });
 
     if (!res.ok) throw new Error('Error eliminando proyecto');
     const result = await res.json();
 
-    revalidatePath('/projects');
+    revalidatePath('/');
 
     return result;
   } catch (err) {

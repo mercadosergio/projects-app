@@ -15,6 +15,7 @@ export function SelectStatus({ task, color }) {
       const formData = new FormData();
       formData.append('id', task.id);
       formData.append('status', status);
+      formData.append('projectId', task.projectId);
       const result = await changeStatus(formData);
 
       if (result) {

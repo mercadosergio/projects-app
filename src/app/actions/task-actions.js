@@ -80,7 +80,28 @@ export async function changeStatus(formData) {
 
     const result = await res.json();
 
-    revalidatePath('/projects');
+    revalidatePath(`/projects/${formData.get('projectId')}`);
+
+    return result;
+  } catch (err) {
+    console.error('change status error:', err);
+    throw err;
+  }
+}
+
+export async function toAssignTask(formData) {
+  try {
+    const object = Object.fromEntries(formData);
+
+    const res = await fetch(`${URL}/${object.id}/assign`, {
+      method: 'PUT',
+      body: JSON.stringify(object),
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    const result = await res.json();
+
+    revalidatePath(`/projects/${formData.get('projectId')}`);
 
     return result;
   } catch (err) {

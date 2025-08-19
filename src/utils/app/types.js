@@ -1,8 +1,8 @@
 export const PRIORITIES = [
-  { id: 1, name: 'LOW', label: 'Baja' },
-  { id: 2, name: 'MEDIUM', label: 'Media' },
-  { id: 3, name: 'HIGH', label: 'Alta' },
-  { id: 4, name: 'URGENT', label: 'Urgente' }
+  { id: 1, name: 'LOW', label: 'Baja', color: 'secondary' },
+  { id: 2, name: 'MEDIUM', label: 'Media', color: 'default' },
+  { id: 3, name: 'HIGH', label: 'Alta', color: 'destructive' },
+  { id: 4, name: 'URGENT', label: 'Urgente', color: 'secondary' }
 ];
 
 export const STATUSES = [

@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
+import { createProject, updateProject } from '@/app/actions/projects-actions';
+import { LoadingOverlay } from '@/components/shared/Loading';
 
 export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
   const tomorrow = new Date();
@@ -35,7 +37,7 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
       try {
         const res = await fetch('/api/users');
         const data = await res.json();
-
+        setLoading(true);
         setUsers(data);
       } catch (error) {
         console.error('Error fetching projects:', error);
@@ -47,25 +49,67 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
     getUsers();
   }, []);
 
-  // if (loading) return <p>Cargando usuarios...</p>;
+  const resetForm = () => {
+    setForm({
+      name: project?.name || '',
+      description: project?.description || '',
+      dueDate: project?.dueDate || tomorrow.toISOString().split('T')[0]
+    });
+  };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    // setErrors({ ...errors, [e.target.name]: '' });
   };
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+
+    formData.append('name', form.name);
+    formData.append('description', form.description);
+    formData.append('dueDate', form.dueDate);
+
+    form.collaboratorsId.forEach((element) => {
+      formData.append(`files`, element);
+    });
+
     if (!isUpdate) {
-      console.log('Crear');
+      await create(formData);
     } else {
-      console.log('Editar');
+      await update(task.id, formData);
     }
   };
 
-  const create = () => {};
+  const create = async (formData) => {
+    try {
+      setLoading(true);
+      const result = await createProject(formData);
+      if (result) {
+        resetForm();
+        toast.success('Guardado exitoso!');
+        onOpenChange();
+      }
+    } catch (error) {
+      console.error('Error al guardar:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const update = () => {};
+  const update = async (id, formData) => {
+    try {
+      setLoading(true);
+      const result = await updateProject(id, formData);
+      if (result) {
+        resetForm();
+        onOpenChange();
+      }
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const addCollaborator = (id) => {
     if (!form.collaboratorsId.includes(id)) {
@@ -207,6 +251,7 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
           </DialogFooter>
         </form>
       </DialogContent>
+      {loading && <LoadingOverlay />}
     </Dialog>
   );
 }
