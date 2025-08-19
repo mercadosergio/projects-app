@@ -8,16 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { STATUSES } from '@/utils/app/types';
 import { faEllipsis, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
-
-const statusColumns = [
-  { id: 1, name: 'PENDING', label: 'Pendientes', color: 'bg-yellow-500' },
-  { id: 2, name: 'IN_PROGRESS', label: 'En Progreso', color: 'bg-orange-500' },
-  { id: 3, name: 'BLOCKED', label: 'Bloqueadas', color: 'bg-gray-400' },
-  { id: 4, name: 'COMPLETED', label: 'Completadas', color: 'bg-green-500' }
-];
 
 export function TasksView({ tasks }) {
   const [draggedTask, setDraggedTask] = useState(null);
@@ -52,7 +46,7 @@ export function TasksView({ tasks }) {
         Nueva
       </Button>
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start auto-rows-auto'>
-        {statusColumns.map((status) => (
+        {STATUSES.map((status) => (
           <div
             key={status.id}
             className='flex flex-col rounded-lg bg-slate-200 p-2 h-auto self-start'

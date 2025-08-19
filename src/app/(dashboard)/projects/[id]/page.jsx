@@ -11,7 +11,6 @@ export async function getTasksByProjectId(projectId) {
 
     return tasks;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

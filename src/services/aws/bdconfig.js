@@ -1,7 +1,6 @@
-// 'server only';
-
 import { environment } from '@/config/environment';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { LambdaClient } from '@aws-sdk/client-lambda';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 const REGION = environment.AWS_REGION;
@@ -38,4 +37,12 @@ const translateConfig = {
 const ddbDocClient = DynamoDBDocumentClient.from(dbClient, translateConfig);
 const TABLE_NAME = environment.DYNAMODB_TABLENAME;
 
-export { ddbDocClient, TABLE_NAME };
+const lambdaClient = new LambdaClient({
+  region: environment.AWS_REGION,
+  credentials: {
+    accessKeyId: environment.AWS_ACCESS_KEY_ID,
+    secretAccessKey: environment.AWS_SECRET_KEY
+  }
+});
+
+export { ddbDocClient, TABLE_NAME, lambdaClient };

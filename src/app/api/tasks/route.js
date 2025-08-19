@@ -1,7 +1,11 @@
 import { environment } from '@/config/environment';
 import { ErrorResponse } from '@/lib/middlewares/api-responses';
 import { ddbDocClient } from '@/services/aws/bdconfig';
-import { BatchWriteCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  BatchWriteCommand,
+  PutCommand,
+  QueryCommand
+} from '@aws-sdk/lib-dynamodb';
 import { NextResponse } from 'next/server';
 import { v4 as uuid } from 'uuid';
 
@@ -76,19 +80,45 @@ if (!global.tasks) {
 
 export async function GET(req) {
   try {
-    const { searchParams } = req.nextUrl;
-    const { project_id } = Object.fromEntries(searchParams.entries());
+    const { searchParams } = new URL(req.url);
+    const projectId = searchParams.get('project_id');
 
     let tasks = [];
 
-    if (project_id !== null) {
-      tasks = global.tasks.filter((task) => task.projectId == project_id);
+    if (projectId) {
+      const resp = await ddbDocClient.send(
+        new QueryCommand({
+          TableName: environment.DYNAMODB_TABLENAME,
+          KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+          ExpressionAttributeValues: {
+            ':pk': `PROJECT#${projectId}`,
+            ':sk': 'TASK#'
+          }
+        })
+      );
+      tasks = resp.Items || [];
     } else {
-      tasks = global.tasks;
+      const resp = await ddbDocClient.send(
+        new ScanCommand({
+          TableName: environment.DYNAMODB_TABLENAME,
+          FilterExpression: 'begins_with(PK, :pk) AND begins_with(SK, :sk)',
+          ExpressionAttributeValues: {
+            ':pk': 'PROJECT#',
+            ':sk': 'TASK#'
+          }
+        })
+      );
+      tasks = resp.Items || [];
     }
 
-    return NextResponse.json(tasks);
+    const result = tasks.map((task) => ({
+      ...task,
+      id: task.SK.split('#')[1]
+    }));
+
+    return NextResponse.json(result);
   } catch (error) {
+    console.error(error);
     return ErrorResponse(error.message);
   }
 }

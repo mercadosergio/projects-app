@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-regular-svg-icons';
 import Link from 'next/link';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export function ProjectCard({ project, onOpenForm, onOpenDetail }) {
   const totalTasks = project.tasks.length;
@@ -43,7 +45,10 @@ export function ProjectCard({ project, onOpenForm, onOpenDetail }) {
             <span className='text-gray-500'>
               {completedTasks}/{totalTasks} tareas
             </span>
-            <span className='text-gray-500'>Vence: {project.dueDate}</span>
+            <span className='text-gray-500'>
+              Vence:{' '}
+              {format(project.dueDate, "dd 'de' MMMM yyyy", { locale: es })}
+            </span>
           </div>
 
           <div className='flex items-center justify-between'>
