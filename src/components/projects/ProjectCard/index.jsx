@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -39,7 +41,9 @@ export function ProjectCard({ project, onOpenForm }) {
           <div className='space-y-2'>
             <div className='flex justify-between text-sm'>
               <span>Progreso</span>
-              <span className='font-medium'>{progress}%</span>
+              <span className='font-medium'>
+                {Number(progress.toFixed(1))}%
+              </span>
             </div>
             <Progress value={progress} className='h-2' />
           </div>

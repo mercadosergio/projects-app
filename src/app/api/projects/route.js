@@ -103,7 +103,10 @@ async function getProjectTasks(projectId) {
         ':pk': `PROJECT#${projectId}`,
         ':sk': 'TASK#'
       },
-      ProjectionExpression: 'PK, SK'
+      ProjectionExpression: 'PK, SK, #s',
+      ExpressionAttributeNames: {
+        '#s': 'status'
+      }
     })
   );
 

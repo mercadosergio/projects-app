@@ -4,7 +4,7 @@ Aplicación web de gestión de proyectos y tareas
 
 ## Descripción
 
-En el contexto de la aplicación, el usuario es global, y este tiene el control de todas las operaciones en ella, por lo que las notificaciones se envían a una dirección de correo electronico configurada
+En el contexto de la aplicación, el usuario es global, y este tiene el control de todas las operaciones en ella, por lo que se envían todas las notificaciones en general a una dirección de correo electronico configurada
 
 ## Datos técnicos
 

@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { Notifications } from '../Notifications';
 
 export function Header() {
@@ -18,7 +18,7 @@ export function Header() {
               />
               ;
             </div>
-            <h1 className='text-xl font-semibold text-gray-900'>TaskFlow</h1>
+            <h1 className='text-xl font-semibold text-gray-900'>ProjectsApp</h1>
           </div>
         </div>
         <div className='flex items-center gap-4'>

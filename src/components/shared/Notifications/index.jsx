@@ -10,8 +10,24 @@ import {
 import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useState } from 'react';
 
 export function Notifications() {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        const res = await fetch('/api/notifications');
+        const data = await res.json();
+        setNotifications(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadNotifications();
+  }, []);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,9 +42,25 @@ export function Notifications() {
           )} */}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align='end'
-        className='min-w-96'></DropdownMenuContent>
+      <DropdownMenuContent align='end' className='min-w-96'>
+        <div className='space-y-2'>
+          {notifications.length === 0 ? (
+            <p>No hay notificaciones</p>
+          ) : (
+            notifications.map((n) => (
+              <div
+                key={n.id}
+                className='p-3 border rounded-lg shadow-sm bg-white'>
+                <p className='font-semibold'>{n.type}</p>
+                <p>{n.message}</p>
+                <small className='text-gray-500'>
+                  {new Date(n.createdAt).toLocaleString()}
+                </small>
+              </div>
+            ))
+          )}
+        </div>
+      </DropdownMenuContent>
     </DropdownMenu>
   );
   return (

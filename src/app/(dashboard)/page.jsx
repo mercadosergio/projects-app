@@ -5,7 +5,6 @@ export async function getProjects() {
     const response = await fetch('http://localhost:3000/api/projects', {
       cache: 'no-store'
     });
-    if (!response.ok) throw new Error('Error al obtener proyectos');
 
     const projects = await response.json();
 
@@ -18,6 +17,7 @@ export async function getProjects() {
 
 export default async function ProjectsPage() {
   const projects = await getProjects();
+  console.log(projects);
 
   return (
     <>

@@ -37,7 +37,7 @@ export async function PUT(req, { params }) {
         new PutCommand({
           TableName: environment.DYNAMODB_TABLENAME,
           Item: {
-            PK: `NOTIFICACTION#${id}`,
+            PK: `NOTIFICATION#${id}`,
             SK: `METADATA#${id}`,
             createdAt,
             id: notificationId,
