@@ -43,7 +43,7 @@ export function Notifications() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='min-w-96'>
-        <div className='space-y-2'>
+        <div className='space-y-2 p-4'>
           {notifications.length === 0 ? (
             <p>No hay notificaciones</p>
           ) : (
