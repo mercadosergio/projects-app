@@ -19,5 +19,5 @@ export default async function ProjectPage({ params }) {
   const { id } = params;
   const tasksByProject = await getTasksByProjectId(id);
 
-  return <TasksView tasks={tasksByProject} />;
+  return <TasksView tasks={tasksByProject} projectId={id} />;
 }

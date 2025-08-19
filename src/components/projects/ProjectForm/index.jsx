@@ -15,12 +15,13 @@ import {
 } from '@/components/ui/dialog';
 
 export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
   const [form, setForm] = useState({
     name: project?.name || '',
     description: project?.description || '',
-    priority: project?.priority || 'medium',
-    dueDate: project?.dueDate || '',
-    team: project?.team || [],
+    dueDate: project?.dueDate || tomorrow.toISOString().split('T')[0],
     collaboratorsId: project?.collaborators
       ? project.collaborators.map((c) => c.id)
       : []
@@ -127,29 +128,6 @@ export function ProjectForm({ isUpdate, project, isOpen, onOpenChange }) {
           </div>
 
           <div className='grid grid-cols-2 gap-4'>
-            {/* <div className='space-y-2'>
-              <label
-                htmlFor='priority'
-                className='block text-sm font-medium text-gray-900'>
-                Prioridad
-              </label>
-              <select
-                id='priority'
-                name='priority'
-                value={form.priority}
-                onChange={handleChange}
-                className='w-full h-9 px-3 py-1 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'>
-                {priorities.map((priority) => (
-                  <option
-                    selected={priority.name === project.priority}
-                    key={priority.id}
-                    value={priority.name}>
-                    {priority.name}
-                  </option>
-                ))}
-              </select>
-            </div> */}
-
             <div className='space-y-2'>
               <label
                 htmlFor='dueDate'

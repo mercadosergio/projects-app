@@ -23,7 +23,7 @@ export function ProyectsList({ projects }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedProject, setselectedProject] = useState(null);
   const [isFormUpdate, setIsFormUpdate] = useState(false);
-  const [isDeatilOpen, setIsDeatilOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const openForm = (mode, project) => {
     setIsFormOpen(true);
@@ -32,12 +32,17 @@ export function ProyectsList({ projects }) {
   };
 
   const openDetail = (project) => {
-    setIsDeatilOpen(true);
+    setIsDetailOpen(true);
     setselectedProject(project);
   };
 
   const handleDeleteProject = (projectId) => {
     setProjects(projects.filter((p) => p.id !== projectId));
+    setSelectedProject(null);
+  };
+
+  const destroyForm = () => {
+    setIsFormOpen(!isFormOpen);
     setSelectedProject(null);
   };
 
@@ -132,29 +137,13 @@ export function ProyectsList({ projects }) {
         />
       )}
 
-      {isDeatilOpen && (
+      {isDetailOpen && (
         <ProjectDetail
           project={selectedProject}
-          isOpen={isDeatilOpen}
-          onOpenChange={setIsDeatilOpen}
+          isOpen={isDetailOpen}
+          onOpenChange={setIsDetailOpen}
         />
       )}
-
-      {/* {selectedProject && (
-        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto'>
-          <div className='bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-y-auto p-6'>
-            <ProjectDetail
-              project={selectedProject}
-              onEdit={() => {
-                setSelectedProject(null);
-                handleEditProject(selectedProject);
-              }}
-              onDelete={() => handleDeleteProject(selectedProject.id)}
-              onClose={() => setSelectedProject(null)}
-            />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

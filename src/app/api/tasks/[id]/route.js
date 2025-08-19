@@ -1,12 +1,7 @@
 import { environment } from '@/config/environment';
 import { ddbDocClient } from '@/services/aws/bdconfig';
 import { NextResponse } from 'next/server';
-import {
-  UpdateCommand,
-  GetCommand,
-  QueryCommand,
-  BatchGetCommand
-} from '@aws-sdk/lib-dynamodb';
+import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { ErrorResponse } from '@/lib/middlewares/api-responses';
 
 export async function PUT(req, { params }) {

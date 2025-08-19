@@ -12,10 +12,42 @@ import { STATUSES } from '@/utils/app/types';
 import { faEllipsis, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
+import { TaskForm } from '../TaskForm';
+import { deleteTask } from '@/app/actions/task-actions';
+import { SelectStatus } from '../SelectStatus';
 
-export function TasksView({ tasks }) {
+export function TasksView({ tasks, projectId }) {
   const [draggedTask, setDraggedTask] = useState(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedTask, setselectedTask] = useState(null);
+  const [isFormUpdate, setIsFormUpdate] = useState(false);
+
+  const openForm = (mode, task) => {
+    setIsFormOpen(true);
+    setselectedTask(task);
+    setIsFormUpdate(mode === 'CREATE' ? false : true);
+  };
+
+  const destroyForm = () => {
+    setIsFormOpen(!isFormOpen);
+    setselectedTask(null);
+  };
+
+  const removeTask = async (id) => {
+    try {
+      const formData = new FormData();
+      formData.append('id', id);
+      formData.append('projectId', projectId);
+
+      const result = await deleteTask(formData);
+
+      if (result) {
+        console.log('Done delete');
+      }
+    } catch (error) {
+      console.error('Error al guardar:', error);
+    }
+  };
 
   const handleDragStart = (e, task) => {
     setDraggedTask(task);
@@ -41,7 +73,7 @@ export function TasksView({ tasks }) {
 
   return (
     <div className='h-full'>
-      <Button className='mb-3' onClick={() => setShowTaskForm(true)}>
+      <Button className='mb-3' onClick={() => openForm('CREATE', null)}>
         <FontAwesomeIcon icon={faPlus} className='h-4 w-4' />
         Nueva
       </Button>
@@ -85,11 +117,16 @@ export function TasksView({ tasks }) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
-                          <DropdownMenuItem onClick={() => onTaskEdit(task)}>
+                          <div>
+                            <SelectStatus task={task} color={status.color} />
+                          </div>
+                          <DropdownMenuItem
+                            onClick={() => openForm('UPDATE', task)}>
                             Editar
                           </DropdownMenuItem>
+
                           <DropdownMenuItem
-                            onClick={() => onTaskDelete(task.id)}
+                            onClick={() => removeTask(task.id)}
                             className='text-red-500'>
                             Eliminar
                           </DropdownMenuItem>
@@ -113,6 +150,16 @@ export function TasksView({ tasks }) {
           </div>
         ))}
       </div>
+
+      {isFormOpen && (
+        <TaskForm
+          isUpdate={isFormUpdate}
+          task={selectedTask}
+          isOpen={isFormOpen}
+          onOpenChange={destroyForm}
+          projectId={projectId}
+        />
+      )}
     </div>
   );
 }

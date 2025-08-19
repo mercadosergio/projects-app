@@ -6,17 +6,18 @@ import { InvokeCommand } from '@aws-sdk/client-lambda';
 import { ddbDocClient, lambdaClient } from '@/services/aws/bdconfig';
 import { v4 as uuid } from 'uuid';
 
-export async function PUT(req) {
+export async function PUT(req, { params }) {
   try {
-    const { taskId, taskTitle, projectName, projectId, status } =
-      await req.json();
+    const { id } = params;
+
+    const { taskTitle, projectName, projectId, status } = await req.json();
 
     const results = await ddbDocClient.send(
       new UpdateCommand({
         TableName: environment.DYNAMODB_TABLENAME,
         Key: {
           PK: `PROJECT#${projectId}`,
-          SK: `TASK#${taskId}`
+          SK: `TASK#${id}`
         },
         UpdateExpression: 'set #s = :s',
         ExpressionAttributeNames: { '#s': 'status' },
@@ -36,8 +37,8 @@ export async function PUT(req) {
         new PutCommand({
           TableName: environment.DYNAMODB_TABLENAME,
           Item: {
-            PK: `NOTIFICACTION#${taskId}`,
-            SK: `METADATA#${taskId}`,
+            PK: `NOTIFICACTION#${id}`,
+            SK: `METADATA#${id}`,
             createdAt,
             id: notificationId,
             projectId,
@@ -61,7 +62,7 @@ export async function PUT(req) {
       return NextResponse.json(
         {
           message: 'Tarea completada',
-          taskId
+          taskId: id
         },
         { status: 200 }
       );
@@ -70,7 +71,7 @@ export async function PUT(req) {
     return NextResponse.json(
       {
         message: 'Cambio realizado exitosamente',
-        taskId
+        taskId: id
       },
       { status: 200 }
     );
