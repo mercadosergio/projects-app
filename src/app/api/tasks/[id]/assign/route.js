@@ -1,6 +1,7 @@
 import { environment } from '@/config/environment';
 import { ErrorResponse } from '@/lib/middlewares/api-responses';
 import { ddbDocClient } from '@/services/aws/bdconfig';
+import { InvokeCommand } from '@aws-sdk/client-lambda';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { NextResponse } from 'next/server';
 
