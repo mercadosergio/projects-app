@@ -1,8 +1,9 @@
 import { ProyectsList } from '@/components/projects/ProjectsList';
+import { environment } from '@/config/environment';
 
 export async function getProjects() {
   try {
-    const response = await fetch('http://localhost:3000/api/projects');
+    const response = await fetch(`${environment.API_URL}/api/projects`);
 
     const projects = await response.json();
 
