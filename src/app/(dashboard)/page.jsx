@@ -3,8 +3,7 @@ import { environment } from '@/config/environment';
 
 export async function getProjects() {
   try {
-    const response = await fetch(`${environment.API_URL}/api/projects`);
-
+    const response = await fetch(`${environment.API_URL}/projects`);
     const projects = await response.json();
 
     return projects;

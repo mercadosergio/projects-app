@@ -4,7 +4,7 @@ import { environment } from '@/config/environment';
 export async function getTasksByProjectId(projectId) {
   try {
     const response = await fetch(
-      `${environment.API_URL}/api/tasks?project_id=${projectId}`
+      `${environment.API_URL}/tasks?project_id=${projectId}`
     );
     if (!response.ok) throw new Error('Error al obtener tareas');
 
