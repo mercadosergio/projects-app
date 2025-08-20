@@ -4,7 +4,5 @@ export const environment = {
   AWS_ACCESS_KEY_ID: process.env.AWS3_ACCESS_KEY_ID,
   AWS_SECRET_KEY: process.env.AWS3_SECRET_KEY,
   DYNAMODB_TABLENAME: process.env.DYNAMODB_TABLENAME,
-  NOTIFY_LAMBDA: process.env.NOTIFY_LAMBDA,
-  ADMIN_USERNAME: process.env.ADMIN_USERNAME,
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD
+  NOTIFY_LAMBDA: process.env.NOTIFY_LAMBDA
 };
