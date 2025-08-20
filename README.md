@@ -32,3 +32,6 @@ Sergio Mercado Salazar
 3. Abrir la consola de comandos y ubicarse en el directorio raiz del proyecto, allí ejecutar `npm install`.
 
 4. Para lanzar la aplicación en ambiente de desarrollo ejecute en la consola `npm run dev` e interactue con las caracteristicas de la misma.
+
+## Demo
+Puede interactuar con la aplicación web ingresando a la [Demo](https://projects-appx.netlify.app/).
